@@ -3,6 +3,11 @@ name: actions
 on:
   push:
     paths: ['Dockerfile']
+  workflow_dispatch:
+    inputs:
+      env:
+        description: '手动触发'
+        default: 'prod'
 
 env:
   own: joybo
