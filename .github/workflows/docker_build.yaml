@@ -11,7 +11,7 @@ on:
 
 env:
   own: joybo
-  repo: $(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
+  repo: ${{ github.repository_name }}
   server: registry.cn-hangzhou.aliyuncs.com
   server-id: cn-hangzhou
 
@@ -27,13 +27,13 @@ jobs:
     - name: 登录阿里云仓库
       uses: aliyun/acr-login@v1 # 使用阿里云镜像服务action
       with:
-        login-server: ${{ server}} # 务必正确填写镜像容器服务的登录地址
-        region-id: ${{ server-id }} # 务必正确填写镜像容器服务的登录地址
+        login-server: ${{ env.server}} # 务必正确填写镜像容器服务的登录地址
+        region-id: ${{ env.server-id }} # 务必正确填写镜像容器服务的登录地址
         username: "${{ secrets.REGISTRY_USERNAME }}" # 引用GitHub repo设置的镜像容器服务用户名
         password: "${{ secrets.REGISTRY_PASSWORD }}" # 引用GitHub repo设置的镜像容器服务密码
     - name: 构建和上传Docker镜像
       env:
         IMAGE_TAG: ${{ steps.date.outputs.date }}-action # 用于标记容器版本号
       run: |
-        docker build -t ${{ server }}/${{ own }}/${{ repo }}:$IMAGE_TAG .
-        docker push  ${{ server }}/${{ own }}/${{ repo }}:$IMAGE_TAG
+        docker build -t ${{ env.server }}/${{ env.own }}/${{ env.repo }}:$IMAGE_TAG .
+        docker push  ${{ env.server }}/${{ env.own }}/${{ env.repo }}:$IMAGE_TAG
